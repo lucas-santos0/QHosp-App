@@ -1,22 +1,54 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ScrollView, Platform, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  Alert,
+} from "react-native";
 
 export default function Contato() {
-  const [email, setEmail] = useState('');
-  const [assunto, setAssunto] = useState('');
-  const [mensagem, setMensagem] = useState('');
+  const [email, setEmail] = useState("");
+  const [assunto, setAssunto] = useState("");
+  const [mensagem, setMensagem] = useState("");
 
   const limparCampos = () => {
-    setEmail('');
-    setAssunto('');
-    setMensagem('');
+    setEmail("");
+    setAssunto("");
+    setMensagem("");
   };
 
-  function mensagemAlert(){
-    Alert.alert("Mensagem enviada com sucesso!","Em breve contataremos o Email indicado");
-    limparCampos();
+  async function enviarMensagem() {
+    if (!email || !assunto || !mensagem) {
+      Alert.alert("Atenção", "Preencha todos os campos!");
+      return;
+    }
 
+    try {
+      const response = await fetch("http://localhost:5000/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, assunto, mensagem }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        Alert.alert("Sucesso", result.message || "Mensagem enviada com sucesso!");
+        limparCampos();
+      } else {
+        Alert.alert("Erro", result.error || "Erro ao enviar mensagem. Tente novamente.");
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert("Erro", "Erro ao conectar com o servidor.");
+    }
   }
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -25,7 +57,6 @@ export default function Contato() {
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Text style={styles.logo}>Contato</Text>
         <Text style={styles.subtitulo}>Mande um Email para nós</Text>
-
         <Text style={styles.descricao}>
           Preencha os respectivos campos para nos contatar
         </Text>
@@ -51,17 +82,17 @@ export default function Contato() {
           style={styles.inputMensagem}
           value={mensagem}
           onChangeText={setMensagem}
-          multiline={true}
+          multiline
           numberOfLines={6}
           textAlignVertical="top"
         />
 
-        <TouchableOpacity style={styles.btnEnviar} onPress={mensagemAlert}>
+        <TouchableOpacity style={styles.btnEnviar} onPress={enviarMensagem}>
           <Text style={styles.btnText}>Enviar</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={[styles.btnLimpar, { backgroundColor: '#34495e' }]} 
+        <TouchableOpacity
+          style={[styles.btnLimpar, { backgroundColor: "#34495e" }]}
           onPress={limparCampos}
         >
           <Text style={styles.btnText}>Limpar</Text>
@@ -109,8 +140,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginBottom: 16,
-    textAlign: "left",
     height: 120,
+    textAlign: "left",
   },
   btnEnviar: {
     backgroundColor: "#2c3e50",

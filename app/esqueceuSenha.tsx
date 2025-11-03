@@ -12,41 +12,105 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import { useForm, Controller } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../conexaoFirebase/firebase";
 import { router } from "expo-router";
-import { sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "../conexaoFirebase/firebase";
-import { MaterialIcons } from "@expo/vector-icons"; // ✅ Import do ícone
+
+const schema = z.object({
+  email: z.string().email("Email inválido"),
+  cpf: z.string().min(11, "CPF inválido"),
+  nome: z.string().min(3, "Nome inválido"),
+  codigo: z.string().length(6, "Código inválido").optional(),
+});
+
+type FormData = z.infer<typeof schema>;
 
 export default function EsqueceuSenha() {
-  const [email, setEmail] = useState("");
+  const [codigoEnviado, setCodigoEnviado] = useState(false);
+  const [emailVerificado, setEmailVerificado] = useState("");
 
-  async function handleReset() {
-    if (!email) {
-      Alert.alert("Atenção", "Por favor, insira seu e-mail.");
-      return;
-    }
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
 
-    try {
-      await sendPasswordResetEmail(auth, email);
-      Alert.alert(
-        "Verifique seu e-mail 📩",
-        "Enviamos um link para redefinir sua senha. Acesse seu e-mail para continuar."
-      );
-      router.replace("/"); // volta pra tela de login
-    } catch (error: any) {
-      console.error(error);
-      if (error.code === "auth/user-not-found") {
-        Alert.alert("Erro", "Usuário não encontrado.");
-      } else if (error.code === "auth/invalid-email") {
-        Alert.alert("Erro", "E-mail inválido.");
-      } else {
-        Alert.alert("Erro", "Não foi possível enviar o e-mail.");
+  async function onSubmit(data: FormData) {
+    if (!codigoEnviado) {
+      try {
+        const usuariosRef = collection(db, "Usuarios");
+        const q = query(usuariosRef, where("Email", "==", data.email));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          Alert.alert("Erro", "Usuário não encontrado com esse e-mail.");
+          return;
+        }
+
+        let usuarioEncontrado = null;
+        querySnapshot.forEach((doc) => {
+          const dados = doc.data();
+          if (dados.CPF === data.cpf && dados.Nome === data.nome) {
+            usuarioEncontrado = { id: doc.id, ...dados };
+          }
+        });
+
+        if (!usuarioEncontrado) {
+          Alert.alert("Erro", "Dados não conferem. Verifique CPF e nome.");
+          return;
+        }
+
+        const response = await fetch("http://localhost:5000/forgot-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: data.email }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          Alert.alert("Sucesso", result.message || "Usuário verificado!");
+          setCodigoEnviado(true);
+          setEmailVerificado(data.email);
+        } else {
+          Alert.alert("Erro", result.error || "Erro ao enviar o código.");
+        }
+      } catch (error) {
+        console.error(error);
+        Alert.alert("Erro", "Erro ao verificar usuário. Tente novamente.");
       }
+    } else {
+      if (!data.codigo) {
+        Alert.alert("Erro", "Digite o código enviado para o seu e-mail.");
+        return;
+      }
+
+      if (!emailVerificado) {
+        Alert.alert("Erro", "E-mail não verificado ainda.");
+        return;
+      }
+
+      // Navegação usando router do expo-router
+      router.push({
+        pathname: "/redefinirSenha",
+        params: { email: emailVerificado, code: data.codigo.trim() },
+      });
     }
   }
 
+  function limparCampos() {
+    reset();
+    setCodigoEnviado(false);
+  }
+
   function voltar() {
-    router.replace("/");
+    router.back();
   }
 
   return (
@@ -55,38 +119,97 @@ export default function EsqueceuSenha() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView
-          contentContainerStyle={styles.container}
-          keyboardShouldPersistTaps="handled"
-        >
-          <TouchableOpacity style={styles.btnIconVoltar} onPress={voltar}>
-            <MaterialIcons size={24} name="arrow-back-ios" color="#2c3e50" />
+        <ScrollView contentContainerStyle={styles.container}>
+          <TouchableOpacity onPress={voltar}>
+            <Text style={styles.voltar}>{'< Voltar'}</Text>
           </TouchableOpacity>
 
-          <Text style={styles.titulo}>Redefinir senha</Text>
-          <Text style={styles.descricao}>
-            Digite o e-mail da sua conta para receber o link de redefinição.
+          <Text style={styles.titulo}>
+            {!codigoEnviado
+              ? "Preencha os campos abaixo para Redefinir sua senha!"
+              : "Enviamos um código de verificação para o seu e-mail. Insira-o abaixo para continuar."}
           </Text>
 
-          <TextInput
-            placeholder="email@dominio.com"
-            style={styles.input}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={email}
-            onChangeText={setEmail}
-          />
+          {!codigoEnviado && (
+            <>
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    placeholder="Email"
+                    style={styles.input}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+              <Text style={styles.erro}>{errors.email?.message}</Text>
 
-          <TouchableOpacity style={styles.btnEnviar} onPress={handleReset}>
-            <Text style={styles.btnText}>Enviar link</Text>
-          </TouchableOpacity>
+              <Controller
+                control={control}
+                name="cpf"
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    placeholder="CPF"
+                    style={styles.input}
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+              <Text style={styles.erro}>{errors.cpf?.message}</Text>
 
-          <TouchableOpacity
-            style={[styles.btnVoltar, { marginTop: 12 }]}
-            onPress={voltar}
-          >
-            <Text style={styles.btnText}>Voltar</Text>
-          </TouchableOpacity>
+              <Controller
+                control={control}
+                name="nome"
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    placeholder="Nome completo"
+                    style={styles.input}
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+              <Text style={styles.erro}>{errors.nome?.message}</Text>
+            </>
+          )}
+
+          {codigoEnviado && (
+            <>
+              <Controller
+                control={control}
+                name="codigo"
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    placeholder="Código de 6 dígitos"
+                    style={styles.input}
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+              <Text style={styles.erro}>{errors.codigo?.message}</Text>
+            </>
+          )}
+
+          <View style={styles.botoes}>
+            <TouchableOpacity style={styles.botao} onPress={limparCampos}>
+              <Text style={styles.botaoTexto}>Limpar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.botao}
+              onPress={handleSubmit(onSubmit)}
+            >
+              <Text style={styles.botaoTexto}>
+                {!codigoEnviado ? "Verificar usuário" : "Avançar"}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -96,25 +219,14 @@ export default function EsqueceuSenha() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: "#fff",
     justifyContent: "center",
     padding: 24,
-  },
-  btnIconVoltar: {
-    position: "absolute",
-    top: 50,
-    left: 20,
+    backgroundColor: "#fff",
   },
   titulo: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: "600",
-    marginBottom: 8,
-    textAlign: "center",
-  },
-  descricao: {
-    fontSize: 14,
-    color: "#555",
-    marginBottom: 16,
+    marginBottom: 20,
     textAlign: "center",
   },
   input: {
@@ -122,22 +234,33 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 8,
     padding: 12,
-    marginBottom: 16,
+    marginBottom: 8,
   },
-  btnEnviar: {
+  erro: {
+    color: "red",
+    marginBottom: 8,
+    fontSize: 12,
+  },
+  botoes: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 16,
+  },
+  botao: {
+    flex: 1,
     backgroundColor: "#2c3e50",
-    padding: 14,
+    padding: 12,
     borderRadius: 8,
     alignItems: "center",
+    marginHorizontal: 4,
   },
-  btnVoltar: {
-    backgroundColor: "#7f8c8d",
-    padding: 14,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  btnText: {
+  botaoTexto: {
     color: "#fff",
+    fontWeight: "600",
+  },
+  voltar: {
+    color: "#2c3e50",
+    marginBottom: 12,
     fontWeight: "600",
   },
 });
