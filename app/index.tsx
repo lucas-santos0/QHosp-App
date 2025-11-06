@@ -7,6 +7,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { LinearGradient } from "expo-linear-gradient";
 
 const schema = z.object({
   email: z.string().email("Email inválido"),
@@ -65,136 +66,181 @@ export default function Login() {
 
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <LinearGradient
+      colors={["#0077b6", "#00b38f"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.tudo}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-          <Text style={styles.logo}>QHosp</Text>
-          <Text style={styles.subtitulo}>gestão e suporte hospitalar</Text>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.quaseTudo}>
+            <View style={styles.box}>
+              <Text style={styles.titulo}>Login</Text>
 
-          <Text style={styles.titulo}>Login</Text>
-          <Text style={styles.descricao}>Insira seu e-mail e senha para logar neste aplicativo</Text>
-
-          <Controller
-            control={control}
-            name="email"
-            render={({ field: { onChange, value } }) => (
-              <TextInput
-                placeholder="email@dominio.com"
-                style={styles.input}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                value={value}
-                onChangeText={onChange}
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    placeholder="Email:"
+                    placeholderTextColor="#6b7280"
+                    style={styles.campo}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
               />
-            )}
-          />
-          {errors.email && <Text style={{ color: "red" }}>{errors.email.message}</Text>}
+              {errors.email && (
+                <Text style={styles.mensagemErro}>{errors.email.message}</Text>
+              )}
 
-
-          <Controller
-            control={control}
-            name="senha"
-            render={({ field: { onChange, value } }) => (
-              <TextInput
-                placeholder="Senha"
-                style={styles.input}
-                secureTextEntry
-                value={value}
-                onChangeText={onChange}
+              <Controller
+                control={control}
+                name="senha"
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    placeholder="Senha:"
+                    placeholderTextColor="#6b7280"
+                    style={styles.campo}
+                    secureTextEntry
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
               />
-            )}
-          />
-          {errors.senha && <Text style={{ color: "red" }}>{errors.senha.message}</Text>}
+              {errors.senha && (
+                <Text style={styles.mensagemErro}>{errors.senha.message}</Text>
+              )}
 
-          <TouchableOpacity onPress={IrParaEsqueceuSenha}>
-            <Text style={styles.descricao}>
-              Esqueceu sua senha?
-            </Text>
-          </TouchableOpacity>
+              <TouchableOpacity onPress={IrParaEsqueceuSenha}>
+                <Text style={styles.esqueceuSenhaTxt}>Esqueceu sua senha?</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity style={styles.btnContinuar} onPress={handleSubmit(Verificacao)}>
-            <Text style={styles.btnText}>Continuar</Text>
-          </TouchableOpacity>
+              <View style={styles.campobotoes}>
+                <TouchableOpacity
+                  style={styles.botao}
+                  onPress={handleSubmit(Verificacao)}
+                >
+                  <Text style={styles.botaoTxt}>Entrar</Text>
+                </TouchableOpacity>
 
-          <View style={styles.linhaCadastro}>
-            <Text>Não tem uma conta? </Text>
-            <TouchableOpacity onPress={IrParaCadastro}>
-              <Text style={styles.btnTextCadastro}>Cadastre-se</Text>
-            </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.botaoSecundario}
+                  onPress={IrParaCadastro}
+                >
+                  <Text style={styles.botaoTxt}>Cadastrar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-        </ScrollView>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 24,
-    backgroundColor: "#fff",
+  tudo: {
+    flex: 1,
     justifyContent: "center",
+    alignItems: "center",
   },
-  logo: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#2c3e50",
-    textAlign: "center",
+  quaseTudo: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
   },
-  subtitulo: {
-    textAlign: "center",
-    fontSize: 14,
-    color: "#7f8c8d",
-    marginBottom: 24,
+  box: {
+    backgroundColor: "rgba(255,255,255,0.9)",
+    width: "100%",
+    maxWidth: 420,
+    minHeight: 480,
+    borderRadius: 20,
+    padding: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 12,
+    elevation: 10,
   },
   titulo: {
-    fontSize: 22,
-    fontWeight: "600",
-    marginBottom: 8,
+    fontSize: 30,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 30,
+    backgroundColor: "transparent",
+    color: "#1e3a8a",
   },
-  descricao: {
+  campo: {
+    borderWidth: 2,
+    borderColor: "#d1d5db",
+    backgroundColor: "#f9fafb",
+    borderRadius: 12,
+    height: 50,
+    width: "100%",
+    fontSize: 16,
+    paddingHorizontal: 15,
+    color: "#111827",
+    marginBottom: 10,
+  },
+  mensagemErro: {
+    color: "red",
+    textAlign: "center",
     fontSize: 14,
-    color: "#555",
-    marginBottom: 16,
+    marginBottom: 5,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
+  esqueceuSenhaTxt: {
+    color: "#1e293b",
+    fontWeight: "500",
+    textAlign: "right",
+    alignSelf: "flex-end",
+    marginTop: 5,
+    marginBottom: 15,
   },
-  btnContinuar: {
-    backgroundColor: "#2c3e50",
-    padding: 14,
-    borderRadius: 8,
+  campobotoes: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 16,
+    marginTop: 20,
+  },
+  botao: {
+    backgroundColor: "#1e3a8a",
+    borderRadius: 25,
+    width: 120,
+    height: 45,
     alignItems: "center",
-    marginBottom: 16,
+    justifyContent: "center",
+    shadowColor: "#1e40af",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 6,
   },
-  btnText: {
+  botaoSecundario: {
+    backgroundColor: "#0d9488",
+    borderRadius: 25,
+    width: 120,
+    height: 45,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#0f766e",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 6,
+  },
+  botaoTxt: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
   },
-  btnCadastro: {
-    borderRadius: 8,
-    alignItems: "center",
-    top: 200,
-  },
-  btnTextCadastro: {
-    color: "#2c3e50",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  linhaCadastro: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 20,
-  },
-
-
 });

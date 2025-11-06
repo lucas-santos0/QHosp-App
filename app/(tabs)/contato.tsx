@@ -9,7 +9,10 @@ import {
   ScrollView,
   Platform,
   Alert,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Contato() {
   const [email, setEmail] = useState("");
@@ -50,112 +53,141 @@ export default function Contato() {
   }
 
   return (
-    <KeyboardAvoidingView
+    <LinearGradient
+      colors={["#0077b6", "#00b38f"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Text style={styles.logo}>Contato</Text>
-        <Text style={styles.subtitulo}>Mande um Email para nós</Text>
-        <Text style={styles.descricao}>
-          Preencha os respectivos campos para nos contatar
-        </Text>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+            <View style={styles.box}>
+              <Text style={styles.titulo}>Entre em Contato</Text>
+              <Text style={styles.subtitulo}>
+                Está tendo problemas? Envie um e-mail para nossa equipe!
+              </Text>
 
-        <TextInput
-          placeholder="email@dominio.com"
-          style={styles.input}
-          keyboardType="email-address"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-        />
+              <TextInput
+                placeholder="Insira seu Email:"
+                style={styles.input}
+                keyboardType="email-address"
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+              />
 
-        <TextInput
-          placeholder="Assunto"
-          style={styles.input}
-          value={assunto}
-          onChangeText={setAssunto}
-        />
+              <TextInput
+                placeholder="Insira o Assunto:"
+                style={styles.input}
+                value={assunto}
+                onChangeText={setAssunto}
+              />
 
-        <TextInput
-          placeholder="Mensagem"
-          style={styles.inputMensagem}
-          value={mensagem}
-          onChangeText={setMensagem}
-          multiline
-          numberOfLines={6}
-          textAlignVertical="top"
-        />
+              <TextInput
+                placeholder="Insira uma Mensagem:"
+                style={styles.inputMensagem}
+                value={mensagem}
+                onChangeText={setMensagem}
+                multiline
+                numberOfLines={6}
+                textAlignVertical="top"
+              />
 
-        <TouchableOpacity style={styles.btnEnviar} onPress={enviarMensagem}>
-          <Text style={styles.btnText}>Enviar</Text>
-        </TouchableOpacity>
+              <View style={styles.btnContainer}>
+                <TouchableOpacity style={styles.btn} onPress={limparCampos}>
+                  <Text style={styles.btnText}>Limpar</Text>
+                </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.btnLimpar, { backgroundColor: "#34495e" }]}
-          onPress={limparCampos}
-        >
-          <Text style={styles.btnText}>Limpar</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+                <TouchableOpacity style={styles.btn} onPress={enviarMensagem}>
+                  <Text style={styles.btnText}>Enviar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 24,
-    backgroundColor: "#fff",
     justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
   },
-  logo: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#2c3e50",
+  box: {
+    backgroundColor: "#fff",
+    borderRadius: 30,
+    padding: 24,
+    width: "100%",
+    maxWidth: 420,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.2,
+    shadowRadius: 15,
+    elevation: 8,
+  },
+  titulo: {
+    fontSize: 28,
+    fontWeight: "700",
     textAlign: "center",
+    marginBottom: 10,
+    color: "#1e3a8a",
   },
   subtitulo: {
     textAlign: "center",
-    fontSize: 14,
-    color: "#7f8c8d",
-    marginBottom: 24,
-  },
-  descricao: {
-    fontSize: 14,
-    color: "#555",
-    marginBottom: 16,
-    textAlign: "left",
+    fontSize: 15,
+    color: "#4b5563",
+    marginBottom: 20,
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: "#d1d5db",
+    backgroundColor: "#f9fafb",
+    borderRadius: 12,
+    height: 50,
+    width: "100%",
+    fontSize: 16,
+    paddingHorizontal: 15,
+    color: "#111827",
+    marginBottom: 10,
   },
   inputMensagem: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: "#d1d5db",
+    backgroundColor: "#f9fafb",
+    borderRadius: 12,
+    width: "100%",
+    fontSize: 16,
+    padding: 15,
+    color: "#111827",
+    marginBottom: 10,
     height: 120,
-    textAlign: "left",
   },
-  btnEnviar: {
-    backgroundColor: "#2c3e50",
-    padding: 14,
-    borderRadius: 8,
-    alignItems: "center",
-    marginBottom: 16,
+  btnContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 15,
+    marginTop: 10,
   },
-  btnLimpar: {
-    backgroundColor: "#2c3e50",
-    padding: 14,
-    borderRadius: 8,
+  btn: {
+    backgroundColor: "#2563eb",
+    borderRadius: 25,
+    height: 48,
+    width: 130,
+    justifyContent: "center",
     alignItems: "center",
-    marginBottom: 16,
+    shadowColor: "#1e40af",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
   btnText: {
     color: "#fff",

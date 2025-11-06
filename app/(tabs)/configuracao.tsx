@@ -1,10 +1,20 @@
 import React, { useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, ScrollView, Platform, TouchableWithoutFeedback, Keyboard,
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
-
+import { LinearGradient } from "expo-linear-gradient";
 import { auth, db } from "../../conexaoFirebase/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -37,9 +47,7 @@ export default function FichaMedica() {
       Alert.alert("Erro", "Você precisa estar logado para salvar a ficha médica");
       return;
     }
-
     const uid = auth.currentUser.uid;
-
     const ficha = {
       data_nascimento: data.dataNascimento,
       sexo: data.sexo,
@@ -48,7 +56,6 @@ export default function FichaMedica() {
       alergia: data.alergia,
       endereco: data.endereco,
     };
-
     try {
       const fichaRef = doc(db, "Usuarios", uid, "FichaMedica", "fichaPrincipal");
       await setDoc(fichaRef, ficha, { merge: true });
@@ -73,9 +80,7 @@ export default function FichaMedica() {
     async function carregarFicha() {
       const user: any = await waitForUser();
       if (!user) return;
-
       const fichaRef = doc(db, "Usuarios", user.uid, "FichaMedica", "fichaPrincipal");
-
       try {
         const fichaDoc = await getDoc(fichaRef);
         if (fichaDoc.exists()) {
@@ -91,7 +96,6 @@ export default function FichaMedica() {
         console.error(error);
       }
     }
-
     carregarFicha();
   }, [setValue]);
 
@@ -99,7 +103,7 @@ export default function FichaMedica() {
     try {
       await auth.signOut();
       Alert.alert("Sucesso", "Logout realizado com sucesso!");
-      router.replace("/"); 
+      router.replace("/");
     } catch (error) {
       console.error(error);
       Alert.alert("Erro", "Não foi possível deslogar.");
@@ -107,79 +111,117 @@ export default function FichaMedica() {
   }
 
   return (
-    <KeyboardAvoidingView
+    <LinearGradient
+      colors={["#f0f4f8", "#ffffff"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
-          <View style={styles.container}>
-            <Text style={styles.titulo}>Ficha Médica</Text>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
+            <View style={styles.container}>
+              <Text style={styles.titulo}>Ficha Médica</Text>
 
-            <Controller
-              control={control}
-              name="dataNascimento"
-              render={({ field: { onChange, value } }) => (
-                <TextInput placeholder="Data de Nascimento" style={styles.input} value={value} onChangeText={onChange} />
-              )}
-            />
-            {errors.dataNascimento && <Text style={styles.errorText}>{errors.dataNascimento.message}</Text>}
+              <Controller
+                control={control}
+                name="dataNascimento"
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    placeholder="Data de Nascimento"
+                    style={styles.input}
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+              {errors.dataNascimento && <Text style={styles.errorText}>{errors.dataNascimento.message}</Text>}
 
-            <Controller
-              control={control}
-              name="sexo"
-              render={({ field: { onChange, value } }) => (
-                <TextInput placeholder="Sexo (M/F)" style={styles.input} value={value} onChangeText={onChange} />
-              )}
-            />
-            {errors.sexo && <Text style={styles.errorText}>{errors.sexo.message}</Text>}
+              <Controller
+                control={control}
+                name="sexo"
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    placeholder="Sexo (M/F)"
+                    style={styles.input}
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+              {errors.sexo && <Text style={styles.errorText}>{errors.sexo.message}</Text>}
 
-            <Controller
-              control={control}
-              name="telefone"
-              render={({ field: { onChange, value } }) => (
-                <TextInput placeholder="Telefone" style={styles.input} keyboardType="phone-pad" value={value} onChangeText={onChange} />
-              )}
-            />
-            {errors.telefone && <Text style={styles.errorText}>{errors.telefone.message}</Text>}
+              <Controller
+                control={control}
+                name="telefone"
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    placeholder="Telefone"
+                    style={styles.input}
+                    keyboardType="phone-pad"
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+              {errors.telefone && <Text style={styles.errorText}>{errors.telefone.message}</Text>}
 
-            <Controller
-              control={control}
-              name="tipoSanguineo"
-              render={({ field: { onChange, value } }) => (
-                <TextInput placeholder="Tipo Sanguíneo" style={styles.input} value={value} onChangeText={onChange} />
-              )}
-            />
-            {errors.tipoSanguineo && <Text style={styles.errorText}>{errors.tipoSanguineo.message}</Text>}
+              <Controller
+                control={control}
+                name="tipoSanguineo"
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    placeholder="Tipo Sanguíneo"
+                    style={styles.input}
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+              {errors.tipoSanguineo && <Text style={styles.errorText}>{errors.tipoSanguineo.message}</Text>}
 
-            <Controller
-              control={control}
-              name="alergia"
-              render={({ field: { onChange, value } }) => (
-                <TextInput placeholder="Alergia (se houver)" style={styles.input} value={value} onChangeText={onChange} />
-              )}
-            />
+              <Controller
+                control={control}
+                name="alergia"
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    placeholder="Alergia (se houver)"
+                    style={styles.input}
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
 
-            <Controller
-              control={control}
-              name="endereco"
-              render={({ field: { onChange, value } }) => (
-                <TextInput placeholder="Endereço" style={styles.input} value={value} onChangeText={onChange} />
-              )}
-            />
-            {errors.endereco && <Text style={styles.errorText}>{errors.endereco.message}</Text>}
+              <Controller
+                control={control}
+                name="endereco"
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    placeholder="Endereço"
+                    style={styles.input}
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+              {errors.endereco && <Text style={styles.errorText}>{errors.endereco.message}</Text>}
 
-            <TouchableOpacity style={styles.btnSalvar} onPress={handleSubmit(salvarFicha)}>
-              <Text style={styles.btnText}>Salvar</Text>
-            </TouchableOpacity>
+              <TouchableOpacity style={styles.btnSalvar} onPress={handleSubmit(salvarFicha)}>
+                <Text style={styles.btnText}>Salvar</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity style={styles.btnLogout} onPress={logout}>
-              <Text style={styles.btnText}>Logout</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+              <TouchableOpacity style={styles.btnLogout} onPress={logout}>
+                <Text style={styles.btnText}>Logout</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 }
 
@@ -190,37 +232,41 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 24,
-    justifyContent: "center", // igual à tela de Contato
-    backgroundColor: "#fff",
+    justifyContent: "center",
   },
   titulo: {
-    fontSize: 24,
-    fontWeight: "600",
-    marginBottom: 24,
+    fontSize: 26,
+    fontWeight: "700",
     textAlign: "center",
+    marginBottom: 24,
+    backgroundColor: "transparent",
+    color: "#1e3a8a",
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
+    borderWidth: 1.5,
+    borderColor: "#a0aec0",
+    backgroundColor: "#f9fafb",
+    borderRadius: 10,
+    padding: 14,
     marginBottom: 12,
+    fontSize: 16,
   },
   errorText: {
-    color: "red",
+    color: "#dc2626",
     marginBottom: 12,
+    textAlign: "center",
   },
   btnSalvar: {
-    backgroundColor: "#2c3e50",
+    backgroundColor: "#1e3a8a",
     padding: 14,
-    borderRadius: 8,
+    borderRadius: 25,
     alignItems: "center",
     marginVertical: 16,
   },
   btnLogout: {
-    backgroundColor: "#c0392b",
+    backgroundColor: "#dc2626",
     padding: 14,
-    borderRadius: 8,
+    borderRadius: 25,
     alignItems: "center",
     marginBottom: 16,
   },

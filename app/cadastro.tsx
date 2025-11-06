@@ -1,11 +1,10 @@
 import React from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, ScrollView, Platform, TouchableWithoutFeedback, Keyboard, Image,} from "react-native";
-
 import { router } from "expo-router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../conexaoFirebase/firebase";
 import { doc, setDoc } from "firebase/firestore";
-
+import { LinearGradient } from "expo-linear-gradient";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -200,7 +199,7 @@ export default function Cadastro() {
             <View style={styles.line} />
           </View>
 
-          <TouchableOpacity style={[styles.btnSocial, styles.google]}>
+          <TouchableOpacity style={[styles.btnSocial]}>
             <Image
               source={{
                 uri: "https://www.svgrepo.com/show/475656/google-color.svg",
@@ -220,98 +219,159 @@ export default function Cadastro() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 24,
-    backgroundColor: "#fff",
     justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+    paddingTop: 60,
+    backgroundColor: "#ffffff",
   },
-  logo: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#2c3e50",
-    textAlign: "center",
-  },
-  subtitulo: {
-    textAlign: "center",
-    fontSize: 14,
-    color: "#7f8c8d",
-    marginBottom: 24,
-  },
-  titulo: {
-    fontSize: 22,
-    fontWeight: "600",
-    marginBottom: 8,
-  },
-  descricao: {
-    fontSize: 14,
-    color: "#555",
-    marginBottom: 16,
-    textAlign: "center",
-  },
-  input: {
+
+  // Caixa branca central
+  box: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 32,
+    width: "100%",
+    maxWidth: 420,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 10,
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 8,
+    borderColor: "#e5e7eb",
+    alignItems: "center",
   },
+
+  titulo: {
+    fontSize: 30,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 16,
+    color: "#1e3a8a",
+    letterSpacing: 0.5,
+  },
+
+  descricao: {
+    textAlign: "center",
+    fontSize: 15,
+    color: "#4b5563",
+    marginBottom: 24,
+    lineHeight: 20,
+  },
+
+  input: {
+    borderWidth: 2,
+    borderColor: "#d1d5db",
+    backgroundColor: "#f9fafb",
+    borderRadius: 12,
+    height: 50,
+    width: "100%",
+    fontSize: 16,
+    paddingHorizontal: 15,
+    color: "#111827",
+    marginBottom: 10,
+  },
+
+  inputFocus: {
+    borderColor: "#3b82f6",
+    backgroundColor: "#fff",
+    shadowColor: "#3b82f6",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+  },
+
   errorText: {
     color: "red",
-    marginBottom: 8,
-    marginLeft: 4,
+    fontSize: 13,
+    marginBottom: 6,
+    textAlign: "center",
   },
+
   btnContinuar: {
-    backgroundColor: "#2c3e50",
-    padding: 14,
-    borderRadius: 8,
+    backgroundColor: "#2563eb",
+    borderRadius: 25,
+    height: 48,
+    width: 180,
+    justifyContent: "center",
     alignItems: "center",
-    marginVertical: 16,
+    marginTop: 10,
+    shadowColor: "#1e40af",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
+
   btnText: {
-    color: "#ffffffff",
+    color: "#fff",
     fontSize: 16,
     fontWeight: "600",
   },
+
   divider: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     marginVertical: 16,
   },
+
   line: {
     flex: 1,
     height: 1,
-    backgroundColor: "#ccc",
+    backgroundColor: "#d1d5db",
   },
+
   dividerText: {
     marginHorizontal: 8,
-    color: "#7f8c8d",
+    color: "#6b7280",
+    fontSize: 14,
   },
+
   btnSocial: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
-    color: "#000000ff",
+    justifyContent: "center",
+    borderRadius: 25,
+    height: 50,
+    backgroundColor: "#fff",
+    borderWidth: 2,
+    borderColor: "#00b38f",
+    shadowColor: "#00b38f",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 6,
+    marginBottom: 30,
+  },
 
-  },
-  google: {
-    borderColor: "#18ad51",
-    borderWidth: 3,
-  },
-  socialIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 20,
-    marginLeft: 20,
-  },
-    btnTextSocial: {
-    color: "#000000ff",
+  btnTextSocial: {
+    color: "#111827",
     fontSize: 16,
     fontWeight: "600",
   },
 
-  btnVoltar:{
-    width:30,
-    marginBottom:30,
-  }
+  socialIcon: {
+    width: 22,
+    height: 22,
+    marginRight: 12,
+  },
+
+  btnVoltar: {
+    position: "absolute",
+    top: 25,
+    left: 25,
+    backgroundColor: "#10b981",
+    width: 50,
+    height: 50,
+    borderRadius: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#10b981",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
 });

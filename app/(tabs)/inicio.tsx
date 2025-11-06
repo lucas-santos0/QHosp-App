@@ -1,71 +1,119 @@
 import React from "react";
-import { View, Text, StyleSheet, KeyboardAvoidingView, ScrollView, Platform, TouchableWithoutFeedback, Keyboard } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Inicio() {
   return (
-    <KeyboardAvoidingView
+    <LinearGradient
+      colors={["#0077b6", "#00b38f"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView 
-          contentContainerStyle={styles.container}
-          keyboardShouldPersistTaps="handled"
-        >
-          <Text style={styles.titulo}>Informações Hospital</Text>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView
+            contentContainerStyle={styles.container}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View style={styles.box}>
+              <Text style={styles.titulo}>Busque pelo Hospital desejado!</Text>
 
-          <View style={styles.divider}>
-            <View style={styles.line} />
-          </View>
+              <TextInput
+                style={styles.input}
+                placeholder="Digite o nome do município"
+                placeholderTextColor="#6b7280"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Digite o nome do estabelecimento"
+                placeholderTextColor="#6b7280"
+              />
 
-          <Text style={styles.subtitulo}>Funcionários:</Text>
-          <Text style={styles.descricao}>5 cirurgiões, 3 ortopedistas</Text>
-
-          <View style={styles.divider}>
-            <View style={styles.line} />
-          </View>
-
-          <Text style={styles.subtitulo}>Horário:</Text>
-          <Text style={styles.descricao}>Seg - Dom</Text>
-        </ScrollView>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+              <TouchableOpacity style={styles.botao}>
+                <Text style={styles.btnText}>Buscar</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 24,
-    backgroundColor: "#fff",
     justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+  },
+  box: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 32,
+    width: "100%",
+    maxWidth: 400,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 10,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    alignItems: "center",
   },
   titulo: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#000",
+    fontSize: 26,
+    fontWeight: "700",
     textAlign: "center",
+    marginBottom: 24,
+    color: "#1e3a8a",
+    letterSpacing: 0.5,
   },
-  subtitulo: {
-    textAlign: "center",
-    fontSize: 14,
-    color: "#000",
-    marginBottom: 8,
+  input: {
+    borderWidth: 2,
+    borderColor: "#d1d5db",
+    backgroundColor: "#f9fafb",
+    borderRadius: 12,
+    height: 50,
+    width: "100%",
+    fontSize: 16,
+    paddingHorizontal: 15,
+    color: "#111827",
+    marginBottom: 14,
   },
-  descricao: {
-    fontSize: 14,
-    color: "#555",
-    marginBottom: 16,
-    textAlign: "center",
-  },
-  divider: {
-    flexDirection: "row",
+  botao: {
+    backgroundColor: "#2563eb",
+    borderRadius: 25,
+    height: 48,
+    width: "60%",
+    justifyContent: "center",
     alignItems: "center",
-    marginVertical: 16,
+    marginTop: 10,
+    shadowColor: "#1e40af",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
-  line: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "#ccc",
+  btnText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
