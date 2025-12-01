@@ -1,50 +1,58 @@
-# Welcome to your Expo app 👋
+# 🏥 QHosp — Gestão e Suporte Hospitalar
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## 📌 Sobre o projeto
 
-## Get started
+O **QHosp** é um sistema desenvolvido para otimizar a organização e comunicação dentro dos hospitais públicos.  
+O projeto foi criado ao longo de 10 meses como parte de um Trabalho de Conclusão de Curso (TCC), buscando resolver problemas reais como:
 
-1. Install dependencies
+- Sobrecarga de profissionais de saúde  
+- Falta de integração entre setores  
+- Demoras no atendimento  
+- Falhas de comunicação entre equipe e pacientes  
 
-   ```bash
-   npm install
-   ```
+O sistema utiliza tecnologia **web e mobile** para facilitar processos internos e melhorar a experiência dos pacientes.
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## 📁 Sobre este repositório
 
-In the output, you'll find options to open the app in a
+Este é o repositório da **versão Mobile do QHosp**, construída com **React Native** e **Expo**, oferecendo um ambiente moderno, responsivo e adaptado para dispositivos móveis.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+A aplicação funciona integrada ao backend e ao Firebase, permitindo:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- Cadastro e login  
+- Gerenciamento de fichas médicas  
+- Listagem de hospitais  
+- Acesso a dados atualizados  
+- Comunicação com APIs externas  
 
-## Get a fresh project
+---
 
-When you're ready, run:
+## 🚀 Funcionalidades da Aplicação Mobile
 
-```bash
-npm run reset-project
-```
+### 👥 Usuários (Pacientes)
+- Criar conta e fazer login  
+- Acessar informações do próprio cadastro  
+- Enviar mensagens de contato  
+- Visualizar dados essenciais sincronizados com o backend  
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## 🔗 Integrações
 
-To learn more about developing your project with Expo, look at the following resources:
+- Firebase Authentication  
+- Firebase Firestore  
+- API CNES  
+- Backend Node.js hospedado no Render  
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+---
 
-## Join the community
+## 🛠️ Tecnologias Utilizadas
 
-Join our community of developers creating universal apps.
+- React Native  
+- Expo  
+- Styled Components  
+- React Hook Form  
+- Zod  
+- Firebase (Auth + Firestore)
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
