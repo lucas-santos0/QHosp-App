@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState } from "react";
+=======
+import React from "react";
+>>>>>>> 6a914d616f8ac10ce735db59cf95146c8dd30c09
 import {
   View,
   Text,
@@ -11,10 +15,14 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+<<<<<<< HEAD
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Carousel } from "../../components/Carousel"; // teu carrossel
+=======
+import { LinearGradient } from "expo-linear-gradient";
+>>>>>>> 6a914d616f8ac10ce735db59cf95146c8dd30c09
 
 export default function Inicio() {
   const schema = z.object({
@@ -126,10 +134,13 @@ export default function Inicio() {
   }
 
   return (
-    <KeyboardAvoidingView
+    <LinearGradient
+      colors={["#0077b6", "#00b38f"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
+<<<<<<< HEAD
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
           contentContainerStyle={styles.container}
@@ -182,12 +193,46 @@ export default function Inicio() {
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
+=======
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView
+            contentContainerStyle={styles.container}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View style={styles.box}>
+              <Text style={styles.titulo}>Busque pelo Hospital desejado!</Text>
+
+              <TextInput
+                style={styles.input}
+                placeholder="Digite o nome do município"
+                placeholderTextColor="#6b7280"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Digite o nome do estabelecimento"
+                placeholderTextColor="#6b7280"
+              />
+
+              <TouchableOpacity style={styles.botao}>
+                <Text style={styles.btnText}>Buscar</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </LinearGradient>
+>>>>>>> 6a914d616f8ac10ce735db59cf95146c8dd30c09
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
+<<<<<<< HEAD
     padding: 24,
     backgroundColor: "#fff",
   },
@@ -213,9 +258,62 @@ const styles = StyleSheet.create({
     backgroundColor: "#2c3e50",
     padding: 14,
     borderRadius: 8,
+=======
+    justifyContent: "center",
     alignItems: "center",
-    marginVertical: 16,
+    padding: 24,
   },
+  box: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 32,
+    width: "100%",
+    maxWidth: 400,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 10,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    alignItems: "center",
+  },
+  titulo: {
+    fontSize: 26,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 24,
+    color: "#1e3a8a",
+    letterSpacing: 0.5,
+  },
+  input: {
+    borderWidth: 2,
+    borderColor: "#d1d5db",
+    backgroundColor: "#f9fafb",
+    borderRadius: 12,
+    height: 50,
+    width: "100%",
+    fontSize: 16,
+    paddingHorizontal: 15,
+    color: "#111827",
+    marginBottom: 14,
+  },
+  botao: {
+    backgroundColor: "#2563eb",
+    borderRadius: 25,
+    height: 48,
+    width: "60%",
+    justifyContent: "center",
+>>>>>>> 6a914d616f8ac10ce735db59cf95146c8dd30c09
+    alignItems: "center",
+    marginTop: 10,
+    shadowColor: "#1e40af",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+<<<<<<< HEAD
   textoBotao: {
     color: "#fff",
     fontWeight: "bold",
@@ -225,5 +323,11 @@ const styles = StyleSheet.create({
     color: "red",
     textAlign: "center",
     marginTop: 10,
+=======
+  btnText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+>>>>>>> 6a914d616f8ac10ce735db59cf95146c8dd30c09
   },
 });
